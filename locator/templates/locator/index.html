@@ -1,0 +1,65 @@
+{% extends "locator/base.html" %} 
+{% block content %}
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+
+        .mapboxgl-marker {
+            cursor: pointer;
+        }
+
+        .locator-popup {
+            font-size: 14px;
+        }
+    </style>
+    <h1>Store Locations</h1>
+    <h5>Click a location to see store details</h5>
+    <div id='map' class='map'></div>
+    
+    <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.13.0/maps/maps.css'/>
+    <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.13.0/maps/maps-web.min.js'></script>
+    
+    <script>
+        // create the map
+        const apiKey = 'INSERT YOUR API KEY HERE'
+        tt.setProductInfo('TomTom Maps Django Demo', '1.0');
+        let map = tt.map({
+            key: apiKey,
+            container: 'map',
+            style: `https://api.tomtom.com/style/1/style/21.2.1-1?key=${apiKey}&map=basic_main`
+        });
+
+        // add store markers
+        let bounds = []
+        let storeLocations = JSON.parse("{{ locations|escapejs }}");
+
+        for (let storeLocation of storeLocations) {
+            let coordinates = [storeLocation.longitude, storeLocation.latitude];
+            bounds.push(coordinates);
+
+            // create popup to display store information when the marker is clicked
+            let popup = new tt.Popup().setHTML(`
+                <div class="locator-popup">
+                    <h6>Store Name</h6>
+                    <p>${storeLocation.name}</p>
+                    <h6>Address</h6>
+                    <p>${storeLocation.address}</p>
+                </div>
+            `);
+
+            let marker = new tt.Marker()
+                .setLngLat(coordinates)
+                .setPopup(popup)
+                .addTo(map);
+        }
+
+        // zoom the map to fit all markers
+        map.on('load', () => {
+            map.fitBounds(bounds, {
+                padding: { top: 50, bottom:50, left: 50, right: 50 }
+            });
+        })
+    </script>
+{% endblock %}
