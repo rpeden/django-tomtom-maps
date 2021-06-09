@@ -18,17 +18,16 @@
     <h5>Click a location to see store details</h5>
     <div id='map' class='map'></div>
     
+    <!-- load TomTom Maps Web SDK from CDN -->
     <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.13.0/maps/maps.css'/>
     <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.13.0/maps/maps-web.min.js'></script>
     
     <script>
         // create the map
-        const apiKey = 'INSERT YOUR API KEY HERE'
         tt.setProductInfo('TomTom Maps Django Demo', '1.0');
         let map = tt.map({
-            key: apiKey,
-            container: 'map',
-            style: `https://api.tomtom.com/style/1/style/21.2.1-1?key=${apiKey}&map=basic_main`
+            key: 'YOUR API KEY GOES HERE',
+            container: 'map'
         });
 
         // add store markers
